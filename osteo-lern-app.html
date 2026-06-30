@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Osteo Wissen – Lernbibliothek</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --surface2: #1f2435;
+    --border: #2a3045;
+    --accent: #7c9e87;
+    --accent2: #a8c4b0;
+    --gold: #c4a55a;
+    --text: #e8eaf0;
+    --text2: #9aa3b8;
+    --text3: #636d85;
+    --danger: #c46a5a;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--accent2);
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
+
+  .logo span { color: var(--gold); }
+
+  nav {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+  }
+
+  nav button {
+    background: none;
+    border: none;
+    color: var(--text2);
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  nav button:hover { background: var(--surface2); color: var(--text); }
+  nav button.active { background: var(--accent); color: #fff; }
+
+  .stats-bar {
+    font-size: 0.78rem;
+    color: var(--text3);
+    white-space: nowrap;
+  }
+
+  .stats-bar span { color: var(--accent2); font-weight: 600; }
+
+  /* LAYOUT */
+  main {
+    flex: 1;
+    padding: 32px;
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--accent2);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-title .icon { font-size: 1.2rem; }
+
+  /* UPLOAD ZONE */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(124,158,135,0.05); }
+
+  .upload-zone input[type=file] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+
+  .upload-icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .upload-text { color: var(--text2); font-size: 0.9rem; line-height: 1.6; }
+  .upload-text strong { color: var(--accent2); }
+
+  /* TEXTAREA */
+  textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 140px;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus { outline: none; border-color: var(--accent); }
+
+  input[type=text] {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 12px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+  }
+
+  input[type=text]:focus { outline: none; border-color: var(--accent); }
+
+  /* BUTTONS */
+  .btn {
+    padding: 10px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.88rem;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent2); }
+  .btn-primary:disabled { background: var(--text3); cursor: not-allowed; }
+
+  .btn-secondary {
+    background: var(--surface2);
+    color: var(--text2);
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover { border-color: var(--accent); color: var(--text); }
+
+  .btn-danger { background: rgba(196,106,90,0.15); color: var(--danger); border: 1px solid rgba(196,106,90,0.3); }
+  .btn-danger:hover { background: rgba(196,106,90,0.25); }
+
+  .btn-gold { background: var(--gold); color: #0f1117; }
+  .btn-gold:hover { opacity: 0.9; }
+
+  /* TAG */
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .tag-green { background: rgba(124,158,135,0.2); color: var(--accent2); }
+  .tag-gold { background: rgba(196,165,90,0.2); color: var(--gold); }
+  .tag-blue { background: rgba(100,130,200,0.2); color: #8aacdc; }
+
+  /* LOADING */
+  .loading {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: rgba(124,158,135,0.08);
+    border-radius: 8px;
+    border: 1px solid rgba(124,158,135,0.2);
+    margin-top: 16px;
+    color: var(--accent2);
+    font-size: 0.88rem;
+  }
+
+  .loading.show { display: flex; }
+
+  .spinner {
+    width: 20px; height: 20px;
+    border: 2px solid rgba(124,158,135,0.3);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+
+  .progress-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.4s;
+  }
+
+  /* SKRIPT LIST */
+  .skript-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    transition: border-color 0.2s;
+  }
+
+  .skript-item:hover { border-color: var(--accent); }
+
+  .skript-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+  .skript-info { flex: 1; }
+  .skript-name { font-weight: 600; font-size: 0.9rem; color: var(--text); }
+  .skript-meta { font-size: 0.78rem; color: var(--text3); margin-top: 3px; }
+
+  .skript-actions { display: flex; gap: 8px; }
+
+  /* RESULT BOX */
+  .result-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 16px;
+    line-height: 1.75;
+    font-size: 0.9rem;
+    color: var(--text);
+    white-space: pre-wrap;
+    display: none;
+  }
+
+  .result-box.show { display: block; }
+
+  .result-box h3 {
+    font-family: 'Playfair Display', serif;
+    color: var(--accent2);
+    font-size: 1rem;
+    margin: 16px 0 8px;
+  }
+
+  .result-box h3:first-child { margin-top: 0; }
+
+  /* TECHNIK CARDS */
+  .technik-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .technik-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .technik-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+
+  .technik-name {
+    font-weight: 600;
+    color: var(--accent2);
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .technik-desc {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* PRÜFUNG */
+  .frage-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+
+  .frage-text {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+
+  .antwort-reveal {
+    background: rgba(124,158,135,0.08);
+    border: 1px solid rgba(124,158,135,0.2);
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    display: none;
+    color: var(--text2);
+  }
+
+  .antwort-reveal.show { display: block; }
+
+  /* SEARCH */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .search-wrap input {
+    padding-left: 42px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text3);
+    font-size: 1rem;
+    pointer-events: none;
+  }
+
+  /* FILTER CHIPS */
+  .filter-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .chip {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text2);
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .chip:hover, .chip.active { border-color: var(--accent); color: var(--accent2); background: rgba(124,158,135,0.1); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 200;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.show { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--accent2);
+    margin-bottom: 20px;
+  }
+
+  .modal-close {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 1.4rem;
+    cursor: pointer;
+    margin-top: -4px;
+  }
+
+  /* EMPTY STATE */
+  .empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text3);
+  }
+
+  .empty-icon { font-size: 3rem; margin-bottom: 16px; }
+  .empty-text { font-size: 0.9rem; line-height: 1.6; }
+
+  /* SECTION LABEL */
+  .section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+
+  /* GRID 2 */
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+  @media (max-width: 700px) {
+    .grid2 { grid-template-columns: 1fr; }
+    header { padding: 0 16px; gap: 12px; }
+    main { padding: 16px; }
+    .stats-bar { display: none; }
+  }
+
+  /* NOTIFICATION */
+  .notif {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--accent);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    z-index: 300;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+
+  .notif.show { transform: translateY(0); opacity: 1; }
+
+  /* RENDER MARKDOWN-LIKE */
+  .rendered h3 { font-family: 'Playfair Display', serif; color: var(--accent2); font-size: 1rem; margin: 14px 0 6px; }
+  .rendered p { margin-bottom: 10px; font-size: 0.88rem; line-height: 1.7; }
+  .rendered ul { padding-left: 20px; margin-bottom: 10px; }
+  .rendered li { font-size: 0.88rem; line-height: 1.7; margin-bottom: 4px; color: var(--text2); }
+  .rendered strong { color: var(--text); }
+  .rendered em { color: var(--gold); font-style: normal; }
+
+  select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 10px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    cursor: pointer;
+  }
+
+  select:focus { outline: none; border-color: var(--accent); }
+
+  .row { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+  .row .btn { flex-shrink: 0; margin-top: 0; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Osteo<span>Wissen</span></div>
+  <nav>
+    <button class="active" onclick="switchTab('bibliothek')">📚 Bibliothek</button>
+    <button onclick="switchTab('techniken')">🔬 Techniken</button>
+    <button onclick="switchTab('suche')">🔍 Suche</button>
+    <button onclick="switchTab('fall')">🩺 Fallanalyse</button>
+    <button onclick="switchTab('pruefung')">📝 Prüfung</button>
+  </nav>
+  <div class="stats-bar" id="statsBar">Skripte: <span id="statSkripte">0</span> · Techniken: <span id="statTechniken">0</span> · Einträge: <span id="statEintraege">0</span></div>
+</header>
+
+<main>
+
+  <!-- ===== BIBLIOTHEK ===== -->
+  <div class="tab-content active" id="tab-bibliothek">
+    <div class="card">
+      <div class="card-title"><span class="icon">📄</span> Skript hinzufügen</div>
+
+      <div class="grid2" style="margin-bottom:16px">
+        <div>
+          <div class="section-label">PDF hochladen</div>
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" accept=".pdf,.txt" id="fileInput" onchange="handleFile(event)">
+            <div class="upload-icon">📂</div>
+            <div class="upload-text"><strong>Klicken oder PDF hierher ziehen</strong><br>Text wird automatisch im Browser extrahiert</div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">Text einkopieren</div>
+          <textarea id="pasteText" placeholder="Skript-Text hier einkopieren..." style="height:136px"></textarea>
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:12px">
+        <input type="text" id="skriptName" placeholder="Skript-Name (z.B. Viszerale Osteopathie – Leim)" style="flex:1">
+        <select id="skriptKategorie">
+          <option value="">Kategorie wählen</option>
+          <option>Viszerale Osteopathie</option>
+          <option>Craniosacral</option>
+          <option>Parietale Osteopathie</option>
+          <option>Neurologie</option>
+          <option>Anatomie</option>
+          <option>Befundung</option>
+          <option>Faszien</option>
+          <option>Sonstiges</option>
+        </select>
+      </div>
+
+      <button class="btn btn-primary" id="verarbeitenBtn" onclick="verarbeiteSkript()">
+        ⚙️ Skript verarbeiten & speichern
+      </button>
+
+      <div class="loading" id="loadingBox">
+        <div class="spinner"></div>
+        <div>
+          <div id="loadingText">KI extrahiert Wissen aus dem Skript…</div>
+          <div class="progress-wrap" style="width:300px;margin-top:6px"><div class="progress-bar" id="progressBar" style="width:5%"></div></div>
+        </div>
+      </div>
+      <div style="font-size:0.78rem;color:var(--text3);margin-top:10px;line-height:1.5">
+        ℹ️ Bei langen PDFs (200+ Seiten) wird der Text zunächst im Browser extrahiert und automatisch in mehrere Blöcke aufgeteilt, die nacheinander verarbeitet werden. Das kann einige Minuten dauern – bitte die Seite währenddessen nicht schließen.
+      </div>
+    </div>
+
+    <div class="card-title" style="margin-top:8px"><span class="icon">📚</span> Gespeicherte Skripte</div>
+    <div id="skriptListe">
+      <div class="empty">
+        <div class="empty-icon">📭</div>
+        <div class="empty-text">Noch keine Skripte gespeichert.<br>Lade dein erstes Skript hoch.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== TECHNIKEN ===== -->
+  <div class="tab-content" id="tab-techniken">
+    <div class="card">
+      <div class="card-title"><span class="icon">🔬</span> Techniken & Untersuchungsmethoden</div>
+      <div class="filter-chips" id="technikFilter">
+        <div class="chip active" onclick="filterTechniken('')" data-filter="">Alle</div>
+      </div>
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="technikSuche" placeholder="Technik suchen…" oninput="renderTechniken()">
+      </div>
+      <div id="technikGrid">
+        <div class="empty"><div class="empty-icon">🔬</div><div class="empty-text">Noch keine Techniken extrahiert.<br>Verarbeite zuerst ein Skript.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SUCHE ===== -->
+  <div class="tab-content" id="tab-suche">
+    <div class="card">
+      <div class="card-title"><span class="icon">🔍</span> Freitext-Suche im Wissen</div>
+      <div class="row">
+        <input type="text" id="sucheInput" placeholder="z.B. Vagusnerv, Zwerchfell, L5-Syndrom, Faszien…" style="flex:1" onkeydown="if(event.key==='Enter') sucheImWissen()">
+        <button class="btn btn-primary" onclick="sucheImWissen()">Suchen</button>
+      </div>
+      <div class="loading" id="sucheLoading"><div class="spinner"></div><div>Durchsuche Wissensbasis…</div></div>
+      <div class="result-box rendered" id="sucheResult"></div>
+    </div>
+  </div>
+
+  <!-- ===== FALLANALYSE ===== -->
+  <div class="tab-content" id="tab-fall">
+    <div class="card">
+      <div class="card-title"><span class="icon">🩺</span> Fallanalyse</div>
+      <div class="section-label" style="margin-bottom:8px">Beschreibe deinen Fall</div>
+      <textarea id="fallText" placeholder="z.B.: Patientin, 42 J., Kopfschmerzen temporal rechts seit 3 Wochen, HWS-Beweglichkeit eingeschränkt, Narbenzug nach Laparoskopie vor 2 Jahren, Tinnitus links…" style="min-height:160px"></textarea>
+      <div style="margin-top:12px;display:flex;gap:12px;flex-wrap:wrap">
+        <button class="btn btn-primary" onclick="analysiereFall()">🔎 Fall analysieren</button>
+        <button class="btn btn-secondary" onclick="document.getElementById('fallText').value=''">Leeren</button>
+      </div>
+      <div class="loading" id="fallLoading"><div class="spinner"></div><div>KI analysiert den Fall aus deiner Wissensbasis…</div></div>
+      <div class="result-box rendered" id="fallResult"></div>
+    </div>
+  </div>
+
+  <!-- ===== PRÜFUNG ===== -->
+  <div class="tab-content" id="tab-pruefung">
+    <div class="card">
+      <div class="card-title"><span class="icon">📝</span> Prüfungsfragen generieren</div>
+      <div class="grid2">
+        <div>
+          <div class="section-label">Themenbereich</div>
+          <select id="pruefThema" style="width:100%">
+            <option value="">Aus der gesamten Wissensbasis</option>
+          </select>
+        </div>
+        <div>
+          <div class="section-label">Schwierigkeitsgrad</div>
+          <select id="pruefLevel" style="width:100%">
+            <option value="gemischt">Gemischt</option>
+            <option value="grundlagen">Grundlagen</option>
+            <option value="fortgeschritten">Fortgeschritten</option>
+            <option value="prüfungsniveau">Prüfungsniveau VFO</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:12px">
+        <button class="btn btn-gold" onclick="generiereFragen()">🎓 Prüfungsfragen generieren</button>
+      </div>
+      <div class="loading" id="pruefLoading"><div class="spinner"></div><div>Generiere Prüfungsfragen…</div></div>
+      <div id="fragenContainer" style="margin-top:20px"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- MODAL: Technik Detail -->
+<div class="modal-overlay" id="technikModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="rendered" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- NOTIFICATION -->
+<div class="notif" id="notif"></div>
+
+<script>
+// ===== STATE =====
+let db = {
+  skripte: [],
+  wissenseintraege: [],
+  techniken: []
+};
+
+let currentFilter = '';
+
+// ===== INIT =====
+function init() {
+  loadFromStorage();
+  renderAll();
+}
+
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem('osteoWissenDB');
+    if (saved) db = JSON.parse(saved);
+  } catch(e) { console.error('Load error', e); }
+}
+
+function saveToStorage() {
+  try {
+    localStorage.setItem('osteoWissenDB', JSON.stringify(db));
+  } catch(e) {
+    showNotif('⚠️ Speicher voll – bitte alte Skripte löschen', true);
+  }
+}
+
+function renderAll() {
+  renderStats();
+  renderSkriptListe();
+  renderTechniken();
+  renderPruefThemen();
+}
+
+// ===== TABS =====
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===== STATS =====
+function renderStats() {
+  document.getElementById('statSkripte').textContent = db.skripte.length;
+  document.getElementById('statTechniken').textContent = db.techniken.length;
+  document.getElementById('statEintraege').textContent = db.wissenseintraege.length;
+}
+
+// ===== FILE HANDLING =====
+async function handleFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  document.getElementById('skriptName').value = file.name.replace(/\.[^.]+$/, '');
+
+  if (file.type === 'text/plain') {
+    const text = await file.text();
+    document.getElementById('pasteText').value = text;
+    window._pendingFile = null;
+    showNotif('✅ Textdatei geladen');
+    return;
+  }
+
+  if (file.type === 'application/pdf') {
+    window._pendingFile = file;
+    showLoading('loadingBox', true);
+    document.getElementById('loadingText').textContent = 'Lese Text aus PDF (' + file.name + ')…';
+    setProgress(5);
+    try {
+      const text = await extractTextFromPDF(file, (done, total) => {
+        setProgress(5 + Math.round((done/total) * 25));
+        document.getElementById('loadingText').textContent = `Lese PDF: Seite ${done} / ${total}…`;
+      });
+      if (!text || text.trim().length < 50) {
+        showLoading('loadingBox', false);
+        showNotif('⚠️ Kein Text im PDF gefunden – evtl. gescanntes Dokument. Bitte Text manuell einkopieren.');
+        window._pendingFile = null;
+        return;
+      }
+      document.getElementById('pasteText').value = text;
+      window._pendingFile = null; // ab jetzt läuft alles über den Textpfad
+      showLoading('loadingBox', false);
+      showNotif(`✅ Text aus PDF extrahiert (${text.length.toLocaleString('de-DE')} Zeichen). Jetzt "Verarbeiten" klicken.`);
+    } catch(err) {
+      showLoading('loadingBox', false);
+      showNotif('❌ PDF konnte nicht gelesen werden: ' + err.message);
+      window._pendingFile = null;
+      console.error(err);
+    }
+  }
+}
+
+async function extractTextFromPDF(file, onProgress) {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+  let fullText = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    const pageText = content.items.map(it => it.str).join(' ');
+    fullText += `\n\n--- Seite ${i} ---\n${pageText}`;
+    if (onProgress) onProgress(i, pdf.numPages);
+  }
+  return fullText;
+}
+
+// Teilt langen Text in Blöcke (ca. 50.000 Zeichen, an Absatzgrenzen)
+function splitIntoChunks(text, maxLen) {
+  if (text.length <= maxLen) return [text];
+  const chunks = [];
+  let start = 0;
+  while (start < text.length) {
+    let end = Math.min(start + maxLen, text.length);
+    if (end < text.length) {
+      const lastBreak = text.lastIndexOf('\n\n', end);
+      if (lastBreak > start + maxLen * 0.5) end = lastBreak;
+    }
+    chunks.push(text.slice(start, end));
+    start = end;
+  }
+  return chunks;
+}
+
+async function extractWissenFromText(text, systemPrompt) {
+  const response = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 4000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: `Extrahiere strukturiertes Wissen aus diesem Osteopathie-Skripttext:\n\n${text}` }]
+    })
+  });
+  if (!response.ok) {
+    const errText = await response.text().catch(() => '');
+    throw new Error(`API-Fehler (${response.status}): ${errText.substring(0,200) || 'Unbekannt'}`);
+  }
+  const data = await response.json();
+  const rawText = data.content.map(i => i.text || '').join('');
+  const clean = rawText.replace(/```json|```/g, '').trim();
+  return JSON.parse(clean);
+}
+
+async function verarbeiteSkript() {
+  const name = document.getElementById('skriptName').value.trim();
+  const kategorie = document.getElementById('skriptKategorie').value;
+  let pasteText = document.getElementById('pasteText').value.trim();
+
+  if (!name) { showNotif('⚠️ Bitte Skript-Namen eingeben'); return; }
+  if (!pasteText) { showNotif('⚠️ Bitte Text einkopieren oder zuerst ein PDF hochladen (Text wird automatisch eingefügt)'); return; }
+
+  const btn = document.getElementById('verarbeitenBtn');
+  btn.disabled = true;
+  showLoading('loadingBox', true);
+  setProgress(5);
+
+  const systemPrompt = `Du bist ein medizinisches Wissensextraktionssystem für Osteopathie-Skripte.
+Analysiere den gegebenen Skripttext (ggf. nur einen Ausschnitt eines längeren Dokuments) und extrahiere strukturiertes Wissen.
+
+Antworte NUR mit einem validen JSON-Objekt (kein Markdown, keine Backticks):
+{
+  "zusammenfassung": "2-3 Sätze Kerninhalt dieses Abschnitts",
+  "hauptthemen": ["Thema1", "Thema2"],
+  "techniken": [
+    {
+      "name": "Name der Technik",
+      "kategorie": "Untersuchung|Behandlung|Palpation|Test",
+      "durchfuehrung": "Schritt-für-Schritt Durchführung",
+      "indikation": "Wann wird sie eingesetzt",
+      "befund": "Was zeigt ein positiver Befund",
+      "anmerkung": "Klinische Besonderheiten"
+    }
+  ],
+  "konzepte": [
+    {
+      "begriff": "Fachbegriff",
+      "erklaerung": "Erklärung auf Fachebene",
+      "zusammenhaenge": "Verbindungen zu anderen Strukturen/Konzepten"
+    }
+  ],
+  "anatomie": ["relevante anatomische Struktur 1", "Struktur 2"],
+  "klinischeBesonderheiten": ["Besonderheit 1", "Besonderheit 2"]
+}
+Wenn der Abschnitt zu einem Thema keine Informationen enthält, gib für das jeweilige Feld ein leeres Array bzw. einen leeren String zurück.`;
+
+  try {
+    const chunks = splitIntoChunks(pasteText, 50000);
+    const merged = { zusammenfassung: '', hauptthemen: [], techniken: [], konzepte: [], anatomie: [], klinischeBesonderheiten: [] };
+
+    for (let i = 0; i < chunks.length; i++) {
+      document.getElementById('loadingText').textContent = chunks.length > 1
+        ? `KI analysiert Block ${i+1} von ${chunks.length}…`
+        : 'KI extrahiert Wissen aus dem Skript…';
+      setProgress(10 + Math.round((i / chunks.length) * 80));
+
+      const part = await extractWissenFromText(chunks[i], systemPrompt);
+
+      if (part.zusammenfassung) merged.zusammenfassung += (merged.zusammenfassung ? ' ' : '') + part.zusammenfassung;
+      merged.hauptthemen.push(...(part.hauptthemen || []));
+      merged.techniken.push(...(part.techniken || []));
+      merged.konzepte.push(...(part.konzepte || []));
+      merged.anatomie.push(...(part.anatomie || []));
+      merged.klinischeBesonderheiten.push(...(part.klinischeBesonderheiten || []));
+    }
+
+    // Duplikate grob entfernen
+    merged.hauptthemen = [...new Set(merged.hauptthemen)];
+    merged.anatomie = [...new Set(merged.anatomie)];
+    merged.klinischeBesonderheiten = [...new Set(merged.klinischeBesonderheiten)];
+
+    setProgress(95);
+
+    const skriptId = Date.now().toString();
+    db.skripte.push({
+      id: skriptId,
+      name,
+      kategorie: kategorie || 'Sonstiges',
+      datum: new Date().toLocaleDateString('de-DE'),
+      zusammenfassung: merged.zusammenfassung,
+      hauptthemen: merged.hauptthemen,
+      anatomie: merged.anatomie,
+      klinischeBesonderheiten: merged.klinischeBesonderheiten
+    });
+
+    merged.techniken.forEach(t => {
+      db.techniken.push({ ...t, skriptId, skriptName: name, id: Math.random().toString(36).substr(2,9) });
+    });
+    merged.konzepte.forEach(k => {
+      db.wissenseintraege.push({ ...k, skriptId, skriptName: name, id: Math.random().toString(36).substr(2,9) });
+    });
+
+    saveToStorage();
+    setProgress(100);
+    showLoading('loadingBox', false);
+    showNotif(`✅ "${name}" gespeichert – ${merged.techniken.length} Techniken, ${merged.konzepte.length} Konzepte (${chunks.length} Block${chunks.length>1?'e':''} verarbeitet)`);
+
+    document.getElementById('skriptName').value = '';
+    document.getElementById('pasteText').value = '';
+    document.getElementById('skriptKategorie').value = '';
+    document.getElementById('fileInput').value = '';
+    window._pendingFile = null;
+
+    renderAll();
+
+  } catch(err) {
+    showLoading('loadingBox', false);
+    showNotif('❌ Fehler: ' + err.message);
+    console.error(err);
+  }
+
+  btn.disabled = false;
+}
+
+// ===== SKRIPT LISTE =====
+function renderSkriptListe() {
+  const container = document.getElementById('skriptListe');
+  if (db.skripte.length === 0) {
+    container.innerHTML = '<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Skripte gespeichert.<br>Lade dein erstes Skript hoch.</div></div>';
+    return;
+  }
+  container.innerHTML = db.skripte.map(s => `
+    <div class="skript-item">
+      <div class="skript-icon">📗</div>
+      <div class="skript-info">
+        <div class="skript-name">${s.name}</div>
+        <div class="skript-meta">${s.datum} · <span class="tag tag-green">${s.kategorie}</span> · ${db.techniken.filter(t=>t.skriptId===s.id).length} Techniken · ${db.wissenseintraege.filter(w=>w.skriptId===s.id).length} Konzepte</div>
+        ${s.zusammenfassung ? `<div class="skript-meta" style="margin-top:4px;color:var(--text2)">${s.zusammenfassung.substring(0,120)}…</div>` : ''}
+      </div>
+      <div class="skript-actions">
+        <button class="btn btn-secondary" style="font-size:0.8rem;padding:6px 12px" onclick="zeigeSkriptDetail('${s.id}')">Details</button>
+        <button class="btn btn-danger" style="font-size:0.8rem;padding:6px 12px" onclick="loescheSkript('${s.id}')">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function zeigeSkriptDetail(id) {
+  const s = db.skripte.find(x => x.id === id);
+  if (!s) return;
+  const techniken = db.techniken.filter(t => t.skriptId === id);
+  const konzepte = db.wissenseintraege.filter(w => w.skriptId === id);
+
+  document.getElementById('modalTitle').textContent = s.name;
+  document.getElementById('modalBody').innerHTML = `
+    <p><strong>Kategorie:</strong> ${s.kategorie} · <strong>Datum:</strong> ${s.datum}</p>
+    ${s.zusammenfassung ? `<h3>Zusammenfassung</h3><p>${s.zusammenfassung}</p>` : ''}
+    ${s.hauptthemen?.length ? `<h3>Hauptthemen</h3><ul>${s.hauptthemen.map(t=>`<li>${t}</li>`).join('')}</ul>` : ''}
+    ${techniken.length ? `<h3>Techniken (${techniken.length})</h3><ul>${techniken.map(t=>`<li><strong>${t.name}</strong> – ${t.kategorie}</li>`).join('')}</ul>` : ''}
+    ${konzepte.length ? `<h3>Konzepte (${konzepte.length})</h3><ul>${konzepte.map(k=>`<li><strong>${k.begriff}</strong> – ${k.erklaerung?.substring(0,80)}…</li>`).join('')}</ul>` : ''}
+    ${s.anatomie?.length ? `<h3>Anatomische Strukturen</h3><p>${s.anatomie.join(', ')}</p>` : ''}
+  `;
+  document.getElementById('technikModal').classList.add('show');
+}
+
+function loescheSkript(id) {
+  if (!confirm('Skript und alle zugehörigen Daten löschen?')) return;
+  db.skripte = db.skripte.filter(s => s.id !== id);
+  db.techniken = db.techniken.filter(t => t.skriptId !== id);
+  db.wissenseintraege = db.wissenseintraege.filter(w => w.skriptId !== id);
+  saveToStorage();
+  renderAll();
+  showNotif('🗑 Skript gelöscht');
+}
+
+// ===== TECHNIKEN =====
+function renderTechniken() {
+  const suche = document.getElementById('technikSuche')?.value?.toLowerCase() || '';
+  let liste = db.techniken;
+  if (currentFilter) liste = liste.filter(t => t.skriptName === currentFilter || t.kategorie === currentFilter);
+  if (suche) liste = liste.filter(t => t.name?.toLowerCase().includes(suche) || t.durchfuehrung?.toLowerCase().includes(suche) || t.indikation?.toLowerCase().includes(suche));
+
+  // Update filter chips
+  const filterDiv = document.getElementById('technikFilter');
+  const kategorien = [...new Set(db.techniken.map(t => t.kategorie).filter(Boolean))];
+  filterDiv.innerHTML = `<div class="chip ${!currentFilter ? 'active' : ''}" onclick="filterTechniken('')">Alle (${db.techniken.length})</div>` +
+    kategorien.map(k => `<div class="chip ${currentFilter===k ? 'active' : ''}" onclick="filterTechniken('${k}')">${k} (${db.techniken.filter(t=>t.kategorie===k).length})</div>`).join('');
+
+  const grid = document.getElementById('technikGrid');
+  if (liste.length === 0) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">🔬</div><div class="empty-text">Keine Techniken gefunden.</div></div>';
+    return;
+  }
+  grid.innerHTML = `<div class="technik-grid">${liste.map(t => `
+    <div class="technik-card" onclick="zeigeTechnikDetail('${t.id}')">
+      <div class="technik-name">${t.name || 'Unbekannte Technik'}</div>
+      <div style="margin-bottom:6px"><span class="tag tag-blue">${t.kategorie || ''}</span></div>
+      <div class="technik-desc">${(t.indikation || t.durchfuehrung || '').substring(0,100)}…</div>
+      <div style="margin-top:8px;font-size:0.75rem;color:var(--text3)">aus: ${t.skriptName}</div>
+    </div>
+  `).join('')}</div>`;
+}
+
+function filterTechniken(val) {
+  currentFilter = val;
+  renderTechniken();
+}
+
+function zeigeTechnikDetail(id) {
+  const t = db.techniken.find(x => x.id === id);
+  if (!t) return;
+  document.getElementById('modalTitle').textContent = t.name;
+  document.getElementById('modalBody').innerHTML = `
+    <p><span class="tag tag-blue">${t.kategorie}</span> <span style="font-size:0.8rem;color:var(--text3);margin-left:8px">aus: ${t.skriptName}</span></p>
+    ${t.indikation ? `<h3>Indikation</h3><p>${t.indikation}</p>` : ''}
+    ${t.durchfuehrung ? `<h3>Durchführung</h3><p>${t.durchfuehrung}</p>` : ''}
+    ${t.befund ? `<h3>Befund / Interpretation</h3><p>${t.befund}</p>` : ''}
+    ${t.anmerkung ? `<h3>Klinische Anmerkungen</h3><p>${t.anmerkung}</p>` : ''}
+  `;
+  document.getElementById('technikModal').classList.add('show');
+}
+
+// ===== SUCHE =====
+async function sucheImWissen() {
+  const query = document.getElementById('sucheInput').value.trim();
+  if (!query) return;
+  if (db.wissenseintraege.length === 0 && db.techniken.length === 0) {
+    showNotif('⚠️ Noch keine Wissensbasis – bitte erst Skripte verarbeiten');
+    return;
+  }
+
+  showLoading('sucheLoading', true);
+  document.getElementById('sucheResult').classList.remove('show');
+
+  const kontext = buildKontextString(500);
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: `Du bist ein osteopathisches Wissensassistenzsystem. Beantworte Fragen ausschließlich auf Basis der bereitgestellten Wissensbasis. Antworte auf Deutsch, präzise, fachlich korrekt. Gib immer an, aus welchem Skript die Information stammt. Wenn etwas nicht in der Wissensbasis enthalten ist, sage das klar.`,
+        messages: [{
+          role: 'user',
+          content: `WISSENSBASIS:\n${kontext}\n\nFRAGE: ${query}`
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content.map(i => i.text || '').join('');
+    showLoading('sucheLoading', false);
+    const box = document.getElementById('sucheResult');
+    box.innerHTML = renderMarkdown(text);
+    box.classList.add('show');
+  } catch(err) {
+    showLoading('sucheLoading', false);
+    showNotif('❌ Fehler: ' + err.message);
+  }
+}
+
+// ===== FALLANALYSE =====
+async function analysiereFall() {
+  const fall = document.getElementById('fallText').value.trim();
+  if (!fall) return;
+  if (db.wissenseintraege.length === 0 && db.techniken.length === 0) {
+    showNotif('⚠️ Noch keine Wissensbasis – bitte erst Skripte verarbeiten');
+    return;
+  }
+
+  showLoading('fallLoading', true);
+  document.getElementById('fallResult').classList.remove('show');
+
+  const kontext = buildKontextString(600);
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1500,
+        system: `Du bist ein erfahrener Osteopath und Heilpraktiker. Analysiere das Fallbeispiel basierend auf der bereitgestellten Wissensbasis. Strukturiere deine Antwort in:
+1. Leitsymptome & Hypothesen
+2. Relevante anatomische Strukturen & Zusammenhänge
+3. Fasziale/viszerale/craniosacrale Verbindungen
+4. Empfohlene Untersuchungstechniken (aus der Wissensbasis)
+5. Osteopathischer Behandlungsansatz
+6. Differentialdiagnose
+
+Antworte auf Fachebene (Heilpraktikerin/Osteopathin). Verweise auf spezifische Techniken aus der Wissensbasis wo möglich.`,
+        messages: [{
+          role: 'user',
+          content: `WISSENSBASIS:\n${kontext}\n\nFALLBEISPIEL:\n${fall}`
+        }]
+      })
+    });
+    const data = await response.json();
+    const text = data.content.map(i => i.text || '').join('');
+    showLoading('fallLoading', false);
+    const box = document.getElementById('fallResult');
+    box.innerHTML = renderMarkdown(text);
+    box.classList.add('show');
+  } catch(err) {
+    showLoading('fallLoading', false);
+    showNotif('❌ Fehler: ' + err.message);
+  }
+}
+
+// ===== PRÜFUNGSFRAGEN =====
+function renderPruefThemen() {
+  const sel = document.getElementById('pruefThema');
+  const kategorien = [...new Set(db.skripte.map(s => s.kategorie).filter(Boolean))];
+  sel.innerHTML = '<option value="">Aus der gesamten Wissensbasis</option>' +
+    db.skripte.map(s => `<option value="${s.id}">${s.name}</option>`).join('');
+}
+
+async function generiereFragen() {
+  if (db.wissenseintraege.length === 0 && db.techniken.length === 0) {
+    showNotif('⚠️ Noch keine Wissensbasis – bitte erst Skripte verarbeiten');
+    return;
+  }
+
+  const thema = document.getElementById('pruefThema').value;
+  const level = document.getElementById('pruefLevel').value;
+  showLoading('pruefLoading', true);
+  document.getElementById('fragenContainer').innerHTML = '';
+
+  let kontext;
+  if (thema) {
+    const s = db.skripte.find(x => x.id === thema);
+    const tech = db.techniken.filter(t => t.skriptId === thema);
+    const konz = db.wissenseintraege.filter(w => w.skriptId === thema);
+    kontext = buildKontextForSkript(s, tech, konz, 400);
+  } else {
+    kontext = buildKontextString(500);
+  }
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 2000,
+        system: `Du generierst Prüfungsfragen für eine Heilpraktikerin/Osteopathin (VFO-Prüfungsniveau). Antworte NUR mit JSON:
+{
+  "fragen": [
+    {
+      "frage": "Die Prüfungsfrage",
+      "typ": "Technik|Anatomie|Klinik|Zusammenhang|Differentialdiagnose",
+      "antwort": "Ausführliche Modellantwort",
+      "stichworte": ["Stichwort1", "Stichwort2"]
+    }
+  ]
+}`,
+        messages: [{
+          role: 'user',
+          content: `Generiere 5 Prüfungsfragen auf ${level}-Niveau basierend auf dieser Wissensbasis:\n\n${kontext}`
+        }]
+      })
+    });
+    const data = await response.json();
+    const raw = data.content.map(i => i.text || '').join('').replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(raw);
+    showLoading('pruefLoading', false);
+    renderFragen(parsed.fragen || []);
+  } catch(err) {
+    showLoading('pruefLoading', false);
+    showNotif('❌ Fehler: ' + err.message);
+  }
+}
+
+function renderFragen(fragen) {
+  const container = document.getElementById('fragenContainer');
+  container.innerHTML = fragen.map((f, i) => `
+    <div class="frage-box">
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px">
+        <span style="font-weight:700;color:var(--gold);font-size:1.1rem">${i+1}</span>
+        <span class="tag tag-blue">${f.typ}</span>
+        ${(f.stichworte||[]).map(s=>`<span class="tag tag-green">${s}</span>`).join('')}
+      </div>
+      <div class="frage-text">${f.frage}</div>
+      <button class="btn btn-secondary" style="font-size:0.82rem;padding:7px 14px" onclick="toggleAntwort(${i})">Antwort zeigen</button>
+      <div class="antwort-reveal" id="antwort-${i}">${renderMarkdown(f.antwort)}</div>
+    </div>
+  `).join('');
+}
+
+function toggleAntwort(i) {
+  const el = document.getElementById('antwort-' + i);
+  el.classList.toggle('show');
+  event.target.textContent = el.classList.contains('show') ? 'Antwort verbergen' : 'Antwort zeigen';
+}
+
+// ===== HELPERS =====
+function buildKontextString(maxEintraege) {
+  let out = '';
+  const techniken = db.techniken.slice(0, Math.floor(maxEintraege * 0.5));
+  const konzepte = db.wissenseintraege.slice(0, Math.floor(maxEintraege * 0.5));
+
+  if (techniken.length) {
+    out += '=== TECHNIKEN ===\n';
+    techniken.forEach(t => {
+      out += `[${t.skriptName}] ${t.name} (${t.kategorie}): Indikation: ${t.indikation||''} | Durchführung: ${t.durchfuehrung||''}\n`;
+    });
+  }
+  if (konzepte.length) {
+    out += '\n=== KONZEPTE ===\n';
+    konzepte.forEach(k => {
+      out += `[${k.skriptName}] ${k.begriff}: ${k.erklaerung||''} | Zusammenhänge: ${k.zusammenhaenge||''}\n`;
+    });
+  }
+  return out;
+}
+
+function buildKontextForSkript(s, tech, konz, max) {
+  let out = `Skript: ${s?.name}\n\n`;
+  tech.slice(0, Math.floor(max*0.5)).forEach(t => {
+    out += `TECHNIK: ${t.name} | ${t.durchfuehrung||''}\n`;
+  });
+  konz.slice(0, Math.floor(max*0.5)).forEach(k => {
+    out += `KONZEPT: ${k.begriff}: ${k.erklaerung||''}\n`;
+  });
+  return out;
+}
+
+function renderMarkdown(text) {
+  return text
+    .replace(/###\s(.+)/g, '<h3>$1</h3>')
+    .replace(/##\s(.+)/g, '<h3>$1</h3>')
+    .replace(/#\s(.+)/g, '<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^\d+\.\s(.+)$/gm, '<p><strong>$&</strong></p>')
+    .replace(/^[-•]\s(.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(?!<[huplid])/gm, '')
+    .replace(/<p><\/p>/g, '');
+}
+
+function showLoading(id, show) {
+  document.getElementById(id).classList.toggle('show', show);
+}
+
+function setProgress(pct) {
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+function showNotif(msg) {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function closeModal() {
+  document.getElementById('technikModal').classList.remove('show');
+}
+
+document.getElementById('technikModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+// Drag & Drop
+const zone = document.getElementById('uploadZone');
+zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag'); });
+zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
+zone.addEventListener('drop', e => {
+  e.preventDefault();
+  zone.classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file) {
+    document.getElementById('fileInput').files = e.dataTransfer.files;
+    handleFile({ target: { files: [file] } });
+  }
+});
+
+init();
+</script>
+</body>
+</html>
